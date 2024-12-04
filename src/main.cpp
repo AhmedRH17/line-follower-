@@ -2,8 +2,18 @@
 #include <L298N.h>
 #include <BluetoothSerial.h>
 #include <PID_v1.h>
+#include "ManualControl.h"
+#include "pidadjust.h"
 
-bool man_or_pid;
+// bluetouth var handling 
+
+String bluetooth_setmaxspeed= "SS";
+String bluetooth_ki= "KI";
+String bluetooth_kd= "KD";
+String bluetooth_kp= "KP";
+
+
+bool man_or_pid = 1;
 BluetoothSerial SerialBT;
 
 int read_and_calc_error();
@@ -17,6 +27,7 @@ int read_and_calc_error();
 // PWM pins for speed control
 #define ENA 12         
 #define ENB 13
+
 
 L298N leftmotor(ENA, MOTOR_A1,  MOTOR_A2);
 L298N rightmotor(ENB, MOTOR_B1, MOTOR_B2);
@@ -42,6 +53,7 @@ void setup() {
   leftmotor.setSpeed(0);  // Stop motor A
   rightmotor.setSpeed(0);  // Stop motor B
 
+// sensor pins decleration
 for (int i= 0; i<5; i++){
   pinMode(sensor_pins[i],INPUT);
 }
@@ -54,6 +66,36 @@ linepid.SetOutputLimits(-(max_speed), max_speed);
   }
 
 void loop() {
+  
+  // detecting what mode it is 
+  String command = "";
+  if (SerialBT.available()) {
+      while (SerialBT.available()){
+     command += (char)SerialBT.read(); // Build the full command
+      }
+      if (command.startsWith("SM")) {
+        if (command.length() > 2) {
+          char mode = command.charAt(2);
+          switch (mode)
+          {
+          case '0':
+          {
+           
+            man_or_pid =0;
+            processCommand(command);
+           }
+            break;
+            case '1':
+            man_or_pid =1;
+            break;
+          }
+        }
+     }
+  }  
+
+  processCommand();
+
+  if (man_or_pid==1){
   int error = read_and_calc_error();
   // Set the PID input to the calculated error
   Input = error;
@@ -72,7 +114,11 @@ void loop() {
   leftmotor.forward();
   rightmotor.forward();
   
+}
+}
 
+if (man_or_pid==0){
+   move_baby();
 }
 
 int read_and_calc_error(){

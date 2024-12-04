@@ -21,17 +21,17 @@ void processCommand(String command) {
     }}}
 
     else if (command.startsWith("KP")){
-        Kp = command.substring(3).toFloat();
+        Kp = command.substring(2).toFloat();
         linepid.SetTunings(Kp, Ki, Kd);
     }
 
         else if (command.startsWith("KD")){
-        Kd = command.substring(3).toFloat();
+        Kd = command.substring(2).toFloat();
         linepid.SetTunings(Kp, Ki, Kd);
     }
     
         else if (command.startsWith("KI")){
-        Ki = command.substring(3).toFloat();
+        Ki = command.substring(2).toFloat();
         linepid.SetTunings(Kp, Ki, Kd);
     }
     
