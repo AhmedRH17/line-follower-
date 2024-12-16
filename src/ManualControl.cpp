@@ -17,25 +17,25 @@ char command;
       
       switch (command)
       {
-      case ('f'):
+      case ('F'):
         leftmotor.setSpeed(max_speed);
         rightmotor.setSpeed(max_speed);
         leftmotor.forward();
         rightmotor.forward();
         break;
-      case ('b'):
+      case ('B'):
         leftmotor.setSpeed(max_speed);
         rightmotor.setSpeed(max_speed);
         leftmotor.backward();
         rightmotor.backward();
         break;
-      case 'l':  
+      case 'L':  
         leftmotor.setSpeed(max_speed / 2);  
         rightmotor.setSpeed(max_speed);
         leftmotor.backward();
         rightmotor.forward();
         break;
-      case 'r':  
+      case 'R':  
         leftmotor.setSpeed(max_speed / 2);  
         rightmotor.setSpeed(max_speed);
         leftmotor.forward();
@@ -49,4 +49,4 @@ char command;
         rightmotor.stop();
         break;
       }
-  }
+  } 
